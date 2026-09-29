@@ -4,9 +4,12 @@ import { COUPONS } from "./coupons.js";
 export function checkout(items, couponCode) {
   const subtotal = computeSubtotal(items);
   let discount = 0;
-  if (couponCode) {
-    const coupon = COUPONS[couponCode];
-    discount = (subtotal * coupon.percent) / 100;
+  if (typeof couponCode === "string" && couponCode.trim()) {
+    const key = couponCode.trim().toUpperCase();
+    const coupon = Object.prototype.hasOwnProperty.call(COUPONS, key) ? COUPONS[key] : undefined;
+    if (coupon) {
+      discount = (subtotal * coupon.percent) / 100;
+    }
   }
   const shipping = computeShipping(subtotal - discount);
   return {
