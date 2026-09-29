@@ -15,6 +15,7 @@ button{background:#6b3e1f;color:#fff;border:0;border-radius:8px;padding:12px 18p
 <h1>☕ Brûlerie Démo</h1><p class="sub">Boutique e-commerce de démonstration</p>
 <div id="list"></div>
 <div class="coupon"><input id="coupon" placeholder="Code promo (ex : BIENVENUE10)"></div>
+<div class="coupon"><input id="email" placeholder="E-mail pour le reçu (optionnel)" value="client@exemple.fr"></div>
 <button onclick="pay()">Valider la commande</button>
 <div id="out" hidden></div>
 </div><script>
@@ -22,9 +23,9 @@ const P={"cafe-bio":["Café bio 1kg",18.9],"mug":["Mug céramique",12.5],"moulin
 list.innerHTML=Object.entries(P).map(([id,[n,p]])=>`<div class="row"><span>${n} — <b>${p.toFixed(2)} €</b></span><input type="number" min="0" value="${id==='cafe-bio'?2:0}" data-id="${id}"></div>`).join("");
 async function pay(){
   const items=[...document.querySelectorAll("[data-id]")].map(i=>({id:i.dataset.id,qty:+i.value})).filter(i=>i.qty>0);
-  const r=await fetch("/api/checkout",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({items,coupon:coupon.value.trim()||undefined})});
+  const r=await fetch("/api/checkout",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({items,coupon:coupon.value.trim()||undefined,email:email.value.trim()||undefined})});
   const d=await r.json();out.hidden=false;
   if(!r.ok){out.className="err";out.textContent="❌ "+d.error;return}
-  out.className="";out.textContent=`Sous-total : ${d.subtotal.toFixed(2)} €\nRemise : -${d.discount.toFixed(2)} €\nLivraison : ${d.shipping.toFixed(2)} €\nTotal : ${d.total.toFixed(2)} € ✅`;
+  out.className="";out.textContent=`Sous-total : ${d.subtotal.toFixed(2)} €\nRemise : -${d.discount.toFixed(2)} €\nLivraison : ${d.shipping.toFixed(2)} €\nTotal : ${d.total.toFixed(2)} € ✅${d.receiptTo?`\nReçu envoyé à ${d.receiptTo}`:''}`;
 }
 </script></body></html>

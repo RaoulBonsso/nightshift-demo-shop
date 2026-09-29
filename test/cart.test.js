@@ -19,3 +19,8 @@ test("checkout sans code promo", () => {
 test("checkout avec code promo BIENVENUE10", () => {
   assert.deepEqual(checkout([{ id: "cafe-bio", qty: 2 }], "BIENVENUE10"), { subtotal: 37.8, discount: 3.78, shipping: 4.9, total: 38.92 });
 });
+
+test("e-mail normalisé pour le reçu", async () => {
+  const { normalizeEmail } = await import("../src/customer.js");
+  assert.equal(normalizeEmail("  Client@Exemple.FR "), "client@exemple.fr");
+});

@@ -1,6 +1,7 @@
 import http from "node:http";
 import fs from "node:fs";
 import { checkout } from "./src/checkout.js";
+import { normalizeEmail } from "./src/customer.js";
 
 const PORT = process.env.PORT || 3000;
 const NIGHTSHIFT_URL = process.env.NIGHTSHIFT_URL || "http://localhost:4000/report";
@@ -28,6 +29,7 @@ http.createServer(async (req, res) => {
     const payload = JSON.parse(body || "{}");
     try {
       const result = checkout(payload.items, payload.coupon);
+      result.receiptTo = normalizeEmail(payload.email);
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify(result));
     } catch (err) {
