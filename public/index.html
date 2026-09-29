@@ -18,7 +18,7 @@ button{background:#6b3e1f;color:#fff;border:0;border-radius:8px;padding:12px 18p
 <button onclick="pay()">Valider la commande</button>
 <div id="out" hidden></div>
 </div><script>
-const P={"cafe-bio":["Café bio 1kg",18.9],"mug":["Mug céramique",12.5],"moulin":["Moulin manuel",49]};
+const P={"cafe-bio":["Café bio 1kg",18.9],"mug":["Mug céramique",12.5],"moulin":["Moulin manuel",49],"the-vert":["Thé vert Sencha 🆕",9.9]};
 list.innerHTML=Object.entries(P).map(([id,[n,p]])=>`<div class="row"><span>${n} — <b>${p.toFixed(2)} €</b></span><input type="number" min="0" value="${id==='cafe-bio'?2:0}" data-id="${id}"></div>`).join("");
 async function pay(){
   const items=[...document.querySelectorAll("[data-id]")].map(i=>({id:i.dataset.id,qty:+i.value})).filter(i=>i.qty>0);
