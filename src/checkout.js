@@ -1,7 +1,18 @@
 import { computeSubtotal, computeShipping, round2 } from "./cart.js";
+import { COUPONS } from "./coupons.js";
 
-export function checkout(items) {
+export function checkout(items, couponCode) {
   const subtotal = computeSubtotal(items);
-  const shipping = computeShipping(subtotal);
-  return { subtotal: round2(subtotal), discount: 0, shipping, total: round2(subtotal + shipping) };
+  let discount = 0;
+  if (couponCode) {
+    const coupon = COUPONS[couponCode];
+    discount = (subtotal * coupon.percent) / 100;
+  }
+  const shipping = computeShipping(subtotal - discount);
+  return {
+    subtotal: round2(subtotal),
+    discount: round2(discount),
+    shipping,
+    total: round2(subtotal - discount + shipping),
+  };
 }

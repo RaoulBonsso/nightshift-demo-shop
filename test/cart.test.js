@@ -15,3 +15,7 @@ test("livraison offerte dès 50€", () => {
 test("checkout sans code promo", () => {
   assert.deepEqual(checkout([{ id: "moulin", qty: 1 }]), { subtotal: 49, discount: 0, shipping: 4.9, total: 53.9 });
 });
+
+test("checkout avec code promo BIENVENUE10", () => {
+  assert.deepEqual(checkout([{ id: "cafe-bio", qty: 2 }], "BIENVENUE10"), { subtotal: 37.8, discount: 3.78, shipping: 4.9, total: 38.92 });
+});
