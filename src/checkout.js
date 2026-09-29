@@ -5,8 +5,11 @@ export function checkout(items, couponCode) {
   const subtotal = computeSubtotal(items);
   let discount = 0;
   if (couponCode) {
-    const coupon = COUPONS[couponCode];
-    discount = (subtotal * coupon.percent) / 100;
+    const key = String(couponCode).trim().toUpperCase();
+    const coupon = Object.hasOwn(COUPONS, key) ? COUPONS[key] : undefined;
+    if (coupon) {
+      discount = (subtotal * coupon.percent) / 100;
+    }
   }
   const shipping = computeShipping(subtotal - discount);
   return {
