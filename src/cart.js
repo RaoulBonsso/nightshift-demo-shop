@@ -1,3 +1,5 @@
+import { ValidationError } from "./errors.js";
+
 export const PRODUCTS = {
   "cafe-bio": { name: "Café bio 1kg", price: 18.9 },
   "mug": { name: "Mug céramique", price: 12.5 },
@@ -5,7 +7,12 @@ export const PRODUCTS = {
 };
 
 export function computeSubtotal(items) {
-  return items.reduce((sum, { id, qty }) => sum + PRODUCTS[id].price * qty, 0);
+  return items.reduce((sum, { id, qty }) => {
+    if (!Object.hasOwn(PRODUCTS, id)) {
+      throw new ValidationError(`Produit inconnu : ${id}`);
+    }
+    return sum + PRODUCTS[id].price * qty;
+  }, 0);
 }
 
 export function computeShipping(subtotal) {
