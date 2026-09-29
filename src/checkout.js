@@ -1,11 +1,15 @@
 import { computeSubtotal, computeShipping, round2 } from "./cart.js";
 import { COUPONS } from "./coupons.js";
+import { ValidationError } from "./errors.js";
 
 export function checkout(items, couponCode) {
   const subtotal = computeSubtotal(items);
   let discount = 0;
   if (couponCode) {
-    const coupon = COUPONS[couponCode];
+    const coupon = Object.hasOwn(COUPONS, couponCode) ? COUPONS[couponCode] : undefined;
+    if (!coupon) {
+      throw new ValidationError(`Code promo inconnu : ${couponCode}`);
+    }
     discount = (subtotal * coupon.percent) / 100;
   }
   const shipping = computeShipping(subtotal - discount);
