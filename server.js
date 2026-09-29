@@ -31,6 +31,11 @@ http.createServer(async (req, res) => {
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify(result));
     } catch (err) {
+      if (err.name === "ValidationError") {
+        res.writeHead(400, { "content-type": "application/json" });
+        res.end(JSON.stringify({ error: err.message }));
+        return;
+      }
       reportError(err, { route: "POST /api/checkout", payload });
       res.writeHead(500, { "content-type": "application/json" });
       res.end(JSON.stringify({ error: "Une erreur est survenue, nos équipes sont prévenues." }));
